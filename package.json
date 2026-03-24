@@ -1,0 +1,41 @@
+{
+  "name": "belka-game",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:init": "node scripts/init-db.js",
+    "test:simulate": "TSX_DISABLE_DAEMON=1 tsx scripts/simulate-game.ts",
+    "test:simulate:bots": "TSX_DISABLE_DAEMON=1 tsx scripts/simulate-game.ts 3 bots",
+    "test:api": "node scripts/api-playthrough.js"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.5.0",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
+    "framer-motion": "^11.3.0",
+    "next": "14.2.5",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "simple-peer": "^9.11.1",
+    "uuid": "^10.0.0",
+    "zustand": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/simple-peer": "^9.11.3",
+    "@types/uuid": "^10",
+    "autoprefixer": "^10.0.1",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "tsx": "^4.20.0",
+    "typescript": "^5"
+  }
+}
