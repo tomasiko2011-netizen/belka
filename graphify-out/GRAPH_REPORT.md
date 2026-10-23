@@ -1,11 +1,12 @@
-# Graph Report - .  (2026-06-11)
+# Graph Report - belka  (2026-10-22)
 
 ## Corpus Check
-- Corpus is ~15,510 words - fits in a single context window. You may not need a graph.
+- 34 files · ~15,510 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 223 nodes · 395 edges · 18 communities (13 shown, 5 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.95)
+- 263 nodes · 433 edges · 20 communities (15 shown, 5 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 2 edges (avg confidence: 0.95)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -24,6 +25,8 @@
 - [[_COMMUNITY_Lobby & Room Pages|Lobby & Room Pages]]
 - [[_COMMUNITY_Leaderboard Page|Leaderboard Page]]
 - [[_COMMUNITY_Next.js Config|Next.js Config]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `compilerOptions` - 15 edges
@@ -46,37 +49,37 @@
   app/api/game/action/route.ts → lib/game-engine.ts
 - `POST()` --calls--> `autoPlayTimeout()`  [EXTRACTED]
   app/api/game/action/route.ts → lib/game-engine.ts
-- `POST()` --calls--> `startNewRound()`  [EXTRACTED]
-  app/api/game/action/route.ts → lib/game-engine.ts
+- `GET()` --calls--> `autoPlayTimeout()`  [EXTRACTED]
+  app/api/game/state/route.ts → lib/game-engine.ts
 
 ## Import Cycles
 - None detected.
 
-## Communities (18 total, 5 thin omitted)
+## Communities (20 total, 5 thin omitted)
 
 ### Community 0 - "API Routes & Database Layer"
 Cohesion: 0.13
 Nodes (31): POST(), GET(), POST(), GET(), addPlayer(), createRoom(), db, ensureSchema() (+23 more)
 
 ### Community 1 - "UI Game Components"
-Cohesion: 0.08
-Nodes (28): CardProps, SIZES, SUIT_SYMBOLS, ChatProps, GameBoard(), GameBoardProps, SEAT_POSITIONS, TRICK_CARD_OFFSETS (+20 more)
+Cohesion: 0.07
+Nodes (29): CardProps, SIZES, SUIT_SYMBOLS, ChatProps, GameBoard(), GameBoardProps, SEAT_POSITIONS, TRICK_CARD_OFFSETS (+21 more)
 
 ### Community 2 - "Card Game Engine"
 Cohesion: 0.15
-Nodes (29): applyBotTurns(), autoPlayTimeout(), calculateTrickPoints(), CARD_POINTS, cardBeats(), chooseBotCard(), createDeck(), dealCards() (+21 more)
+Nodes (28): applyBotTurns(), autoPlayTimeout(), calculateTrickPoints(), CARD_POINTS, cardBeats(), chooseBotCard(), createDeck(), dealCards() (+20 more)
 
 ### Community 3 - "Dev Dependencies Config"
-Cohesion: 0.08
-Nodes (23): devDependencies, autoprefixer, postcss, tailwindcss, tsx, @types/node, @types/react, @types/react-dom (+15 more)
+Cohesion: 0.07
+Nodes (27): dependencies, clsx, dotenv, framer-motion, @libsql/client, next, pusher, pusher-js (+19 more)
 
 ### Community 4 - "TypeScript Compiler Config"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
 ### Community 5 - "Runtime Dependencies"
-Cohesion: 0.15
-Nodes (13): dependencies, clsx, dotenv, framer-motion, @libsql/client, next, pusher, pusher-js (+5 more)
+Cohesion: 0.10
+Nodes (19): 1. Установка зависимостей, 2. Настройка базы данных (Turso), 3. Настройка Pusher, 4. Переменные окружения, 5. Инициализация БД, 6. Запуск, 🐿️ Белка — Казахстанская карточная игра онлайн, 📹 Видеочат (+11 more)
 
 ### Community 6 - "Docs & CI Workflow"
 Cohesion: 0.25
@@ -94,23 +97,33 @@ Nodes (7): background_color, display, icons, name, short_name, start_url, theme_
 Cohesion: 0.25
 Nodes (7): maxDuration, buildCommand, devCommand, framework, functions, app/api/**/*.ts, installCommand
 
+### Community 18 - "Community 18"
+Cohesion: 0.10
+Nodes (19): 1. Установка зависимостей, 2. Настройка базы данных (Turso), 3. Настройка Pusher, 4. Переменные окружения, 5. Инициализация БД, 6. Запуск, 🐿️ Белка — Казахстанская карточная игра онлайн, 📹 Видеочат (+11 more)
+
+### Community 19 - "Community 19"
+Cohesion: 0.22
+Nodes (9): scripts, build, db:init, dev, lint, start, test:api, test:simulate (+1 more)
+
 ## Knowledge Gaps
-- **94 isolated node(s):** `metadata`, `LeaderboardRow`, `RoomInfo`, `SUIT_SYMBOLS`, `SIZES` (+89 more)
+- **126 isolated node(s):** `metadata`, `LeaderboardRow`, `RoomInfo`, `SUIT_SYMBOLS`, `SIZES` (+121 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `Runtime Dependencies` to `Dev Dependencies Config`?**
-  _High betweenness centrality (0.014) - this node is a cross-community bridge._
+- **Why does `scripts` connect `Community 19` to `Dev Dependencies Config`?**
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **What connects `metadata`, `LeaderboardRow`, `RoomInfo` to the rest of the system?**
-  _94 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _126 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `API Routes & Database Layer` be split into smaller, more focused modules?**
-  _Cohesion score 0.13107822410147993 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12790697674418605 - nodes in this community are weakly interconnected._
 - **Should `UI Game Components` be split into smaller, more focused modules?**
-  _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07435897435897436 - nodes in this community are weakly interconnected._
 - **Should `Dev Dependencies Config` be split into smaller, more focused modules?**
-  _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
 - **Should `TypeScript Compiler Config` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._
+- **Should `Runtime Dependencies` be split into smaller, more focused modules?**
+  _Cohesion score 0.1 - nodes in this community are weakly interconnected._
