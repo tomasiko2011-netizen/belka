@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { createRoom, getRoom, listRooms, addPlayer, updateGameState } from '@/lib/db';
 import { createInitialGameState } from '@/lib/game-engine';
 import { pusherServer, roomChannel, EVENTS } from '@/lib/pusher';
+import { signPlayer } from '@/lib/player-token';
 
 export async function GET() {
   try {
@@ -57,7 +58,7 @@ export async function POST(req: NextRequest) {
       }],
     });
 
-    return NextResponse.json({ roomId, playerId });
+    return NextResponse.json({ roomId, playerId, playerToken: signPlayer(playerId) });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: 'Failed to create room' }, { status: 500 });
@@ -116,7 +117,7 @@ export async function PUT(req: NextRequest) {
       console.error('Pusher PLAYER_JOINED failed', e);
     }
 
-    return NextResponse.json({ roomId, playerId, seatIndex });
+    return NextResponse.json({ roomId, playerId, seatIndex, playerToken: signPlayer(playerId) });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: 'Failed to join room' }, { status: 500 });

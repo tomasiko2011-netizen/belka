@@ -3,10 +3,12 @@ import { getRoom, updateGameState, setRoomStarted, recordGameResult, addPlayer, 
 import { createInitialGameState, playCard, startGame, startNewRound, applyBotTurns, autoPlayTimeout } from '@/lib/game-engine';
 import { pusherServer, roomChannel, EVENTS } from '@/lib/pusher';
 import { v4 as uuidv4 } from 'uuid';
+import { verifyPlayer } from '@/lib/player-token';
 
 export async function POST(req: NextRequest) {
   try {
-    const { roomId, playerId, action, cardId, rules } = await req.json();
+    const { roomId, playerId, playerToken, action, cardId, rules } = await req.json();
+    if (!verifyPlayer(playerId, playerToken)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const room = await getRoom(roomId);
     if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
