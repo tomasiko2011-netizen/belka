@@ -23,21 +23,24 @@ async function api(path, options = {}) {
   return data;
 }
 
+// playerId → playerToken из ответа /api/rooms
+const tokens = {};
+
 async function getState(roomId, playerId) {
-  return api(`/api/game/state?roomId=${roomId}&playerId=${playerId}`, { method: 'GET' });
+  return api(`/api/game/state?roomId=${roomId}&playerId=${playerId}&playerToken=${encodeURIComponent(tokens[playerId])}`, { method: 'GET' });
 }
 
 async function startGame(roomId, playerId) {
   return api('/api/game/action', {
     method: 'POST',
-    body: JSON.stringify({ roomId, playerId, action: 'start_game' }),
+    body: JSON.stringify({ roomId, playerId, playerToken: tokens[playerId], action: 'start_game' }),
   });
 }
 
 async function playCard(roomId, playerId, cardId) {
   return api('/api/game/action', {
     method: 'POST',
-    body: JSON.stringify({ roomId, playerId, action: 'play_card', cardId }),
+    body: JSON.stringify({ roomId, playerId, playerToken: tokens[playerId], action: 'play_card', cardId }),
   });
 }
 
@@ -62,6 +65,7 @@ async function runOnce(index) {
   });
 
   const roomId = host.roomId;
+  tokens[host.playerId] = host.playerToken;
   const players = [
     { id: host.playerId, name: `Host${index}` },
   ];
@@ -71,6 +75,7 @@ async function runOnce(index) {
       method: 'PUT',
       body: JSON.stringify({ roomId, playerName: `P${index}-${i}` }),
     });
+    tokens[join.playerId] = join.playerToken;
     players.push({ id: join.playerId, name: `P${index}-${i}` });
   }
 

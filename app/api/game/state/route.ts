@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRoom, updateGameState } from '@/lib/db';
 import { createInitialGameState, autoPlayTimeout } from '@/lib/game-engine';
+import { verifyPlayer } from '@/lib/player-token';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -10,6 +11,7 @@ export async function GET(req: NextRequest) {
   if (!roomId || !playerId) {
     return NextResponse.json({ error: 'Missing params' }, { status: 400 });
   }
+  if (!verifyPlayer(playerId, searchParams.get('playerToken'))) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const room = await getRoom(roomId);
   if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });

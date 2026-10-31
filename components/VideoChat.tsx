@@ -81,6 +81,7 @@ export default function VideoChat({
         body: JSON.stringify({
           type: 'toggle',
           from: playerId,
+          fromToken: localStorage.getItem('belka_player_token') || '',
           to: 'all',
           signal: { hasVideo, hasAudio: hasAudio ?? audioEnabled },
           roomId,
@@ -94,7 +95,7 @@ export default function VideoChat({
       await fetch('/api/video', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type, from: playerId, to, signal, roomId }),
+        body: JSON.stringify({ type, from: playerId, fromToken: localStorage.getItem('belka_player_token') || '', to, signal, roomId }),
       });
     } catch {}
   }

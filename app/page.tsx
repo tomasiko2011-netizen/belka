@@ -77,6 +77,7 @@ export default function LobbyPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       localStorage.setItem('belka_player_id', data.playerId);
+      localStorage.setItem('belka_player_token', data.playerToken);
       localStorage.setItem('belka_player_name', playerName.trim());
       router.push(`/game/${data.roomId}`);
     } catch (e: any) {
@@ -99,6 +100,7 @@ export default function LobbyPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       localStorage.setItem('belka_player_id', data.playerId);
+      localStorage.setItem('belka_player_token', data.playerToken);
       localStorage.setItem('belka_player_name', playerName.trim());
       router.push(`/game/${id}`);
     } catch (e: any) {
