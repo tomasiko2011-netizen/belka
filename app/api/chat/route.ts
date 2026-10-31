@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { saveMessage, getChatHistory, getRoom } from '@/lib/db';
 import { pusherServer, roomChannel, EVENTS } from '@/lib/pusher';
 import { ChatMessage } from '@/lib/types';
+import { verifyPlayer } from '@/lib/player-token';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -15,7 +16,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   try {
-    const { roomId, playerId, playerName, text } = await req.json();
+    const { roomId, playerId, playerToken, text } = await req.json();
+    if (!verifyPlayer(playerId, playerToken)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     if (!text?.trim()) return NextResponse.json({ error: 'Empty message' }, { status: 400 });
     if (text.length > 500) return NextResponse.json({ error: 'Message too long' }, { status: 400 });
@@ -25,14 +27,15 @@ export async function POST(req: NextRequest) {
     if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
 
     const player = room.players.find(p => p.id === playerId);
-    if (player?.isMuted) {
+    if (!player) return NextResponse.json({ error: 'Not in room' }, { status: 403 });
+    if (player.isMuted) {
       return NextResponse.json({ error: 'You are muted' }, { status: 403 });
     }
 
     const message: ChatMessage = {
       id: uuidv4(),
       playerId,
-      playerName,
+      playerName: player.name,
       text: text.trim(),
       timestamp: Date.now(),
       type: 'chat',
