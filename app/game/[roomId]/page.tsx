@@ -6,6 +6,9 @@ import { getPusherClient, EVENTS } from '@/lib/pusher';
 import { GameState, ChatMessage, Card as CardType } from '@/lib/types';
 import GameBoard from '@/components/GameBoard';
 
+
+const playerToken = () => (typeof window !== 'undefined' && localStorage.getItem('belka_player_token')) || '';
+
 export default function GamePage({ params }: { params: { roomId: string } }) {
   const router = useRouter();
   const { roomId } = params;
@@ -37,7 +40,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
 
   useEffect(() => {
     if (!playerId || !roomId) return;
-    const payload = JSON.stringify({ roomId, playerId, action: 'player_left' });
+    const payload = JSON.stringify({ roomId, playerId, playerToken: playerToken(), action: 'player_left' });
 
     const sendLeave = () => {
       try {
@@ -91,7 +94,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
   async function refreshState(pidOverride?: string) {
     const pid = pidOverride || playerId;
     if (!pid) return;
-    const stateRes = await fetch(`/api/game/state?roomId=${roomId}&playerId=${pid}`);
+    const stateRes = await fetch(`/api/game/state?roomId=${roomId}&playerId=${pid}&playerToken=${encodeURIComponent(playerToken())}`);
     if (stateRes.ok) {
       const data = await stateRes.json();
       setGameState(data.gameState);
@@ -112,6 +115,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
   function setupPusher(pid: string, pname: string) {
     const client = getPusherClient({
       'x-player-id': pid,
+      'x-player-token': playerToken(),
       'x-player-name': pname,
     });
     pusherClient.current = client;
@@ -178,7 +182,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
       const res = await fetch('/api/game/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roomId, playerId, action, cardId, ...(payload || {}) }),
+        body: JSON.stringify({ roomId, playerId, playerToken: playerToken(), action, cardId, ...(payload || {}) }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -197,7 +201,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
       await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roomId, playerId, playerName, text }),
+        body: JSON.stringify({ roomId, playerId, playerToken: playerToken(), text }),
       });
     } catch (e) {
       console.error(e);
@@ -209,7 +213,7 @@ export default function GamePage({ params }: { params: { roomId: string } }) {
       const res = await fetch('/api/mod', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roomId, moderatorId: playerId, targetPlayerId: targetId, action: type }),
+        body: JSON.stringify({ roomId, moderatorId: playerId, moderatorToken: playerToken(), targetPlayerId: targetId, action: type }),
       });
       if (!res.ok) {
         const d = await res.json();

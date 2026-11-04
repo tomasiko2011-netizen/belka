@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getRoom, updatePlayerBan, updatePlayerMute } from '@/lib/db';
 import { pusherServer, roomChannel, EVENTS } from '@/lib/pusher';
+import { verifyPlayer } from '@/lib/player-token';
 
 export async function POST(req: NextRequest) {
   try {
-    const { roomId, moderatorId, targetPlayerId, action } = await req.json();
+    const { roomId, moderatorId, moderatorToken, targetPlayerId, action } = await req.json();
+    if (!verifyPlayer(moderatorId, moderatorToken)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const room = await getRoom(roomId);
     if (!room) return NextResponse.json({ error: 'Room not found' }, { status: 404 });
