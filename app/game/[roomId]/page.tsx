@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { use, useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { getPusherClient, EVENTS } from '@/lib/pusher';
 import { GameState, ChatMessage, Card as CardType } from '@/lib/types';
@@ -9,9 +9,10 @@ import GameBoard from '@/components/GameBoard';
 
 const playerToken = () => (typeof window !== 'undefined' && localStorage.getItem('belka_player_token')) || '';
 
-export default function GamePage({ params }: { params: { roomId: string } }) {
+export default function GamePage({ params }: { params: Promise<{ roomId: string }> }) {
   const router = useRouter();
-  const { roomId } = params;
+  // Next 15+: params is a Promise; in client components unwrap it with React.use()
+  const { roomId } = use(params);
 
   const [playerId, setPlayerId] = useState<string>('');
   const [playerName, setPlayerName] = useState<string>('');

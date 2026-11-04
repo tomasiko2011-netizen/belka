@@ -6,3 +6,6 @@ node_modules/
 dist/
 out/
 .vercel
+.next/
+next-env.d.ts
+*.tsbuildinfo
